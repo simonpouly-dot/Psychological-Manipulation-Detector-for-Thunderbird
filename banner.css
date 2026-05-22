@@ -3,13 +3,13 @@
   position: fixed;
   top: 12px;
   right: 12px;
-  width: 260px;
+  width: 270px;
   background: #1a1a2e;
-  border-radius: 10px;
+  border-radius: 12px;
   z-index: 9999;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   overflow: hidden;
 }
 
@@ -18,11 +18,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
+  padding: 10px 12px;
 }
 
 .panel-title {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #cccccc;
@@ -30,13 +30,13 @@
 }
 
 .panel-close {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.12);
   border: none;
   color: #cccccc;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -53,28 +53,27 @@
 
 /* ── Score section ──────────────────────────────────────────── */
 .panel-score-section {
-  padding: 0 10px 8px;
+  padding: 0 12px 10px;
 }
 
 .panel-score-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .panel-score-label {
   font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   color: #777777;
   text-transform: uppercase;
 }
 
 .panel-score-value {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  color: #e05252;
 }
 
 .panel-progress-track {
@@ -87,17 +86,16 @@
 .panel-progress-bar {
   height: 100%;
   border-radius: 2px;
-  background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
   transition: width 0.6s ease;
 }
 
 /* ── Chips section ──────────────────────────────────────────── */
 .panel-chips {
-  padding: 8px 10px 10px;
+  padding: 10px 12px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
 /* ── Individual chip ────────────────────────────────────────── */
@@ -105,7 +103,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 5px 4px 9px;
+  padding: 5px 5px 5px 10px;
   border-radius: 999px;
   color: #ffffff;
   font-size: 11px;
@@ -118,15 +116,14 @@
 .chip-black  { background: #1e1e1e; border: 1px solid rgba(255,255,255,0.18); }
 
 .chip-name {
-  flex: 1;
   white-space: nowrap;
 }
 
 .chip-count {
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 50%;
-  min-width: 18px;
-  height: 18px;
+  min-width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,13 +133,13 @@
 }
 
 .chip-close {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: rgba(255, 255, 255, 0.85);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
