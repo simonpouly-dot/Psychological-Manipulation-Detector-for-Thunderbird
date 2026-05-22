@@ -1,5 +1,12 @@
 let bannerElement: HTMLElement | null = null;
 
+const SCORE_COLORS: Record<string, { text: string; bar: string }> = {
+  'Critique': { text: '#e05252', bar: 'linear-gradient(90deg,#c0392b,#e74c3c)' },
+  'Élevé':   { text: '#e07828', bar: 'linear-gradient(90deg,#d35400,#e67e22)' },
+  'Modéré':  { text: '#c8a500', bar: 'linear-gradient(90deg,#9a7700,#c9a800)' },
+  'Faible':  { text: '#2e9e40', bar: 'linear-gradient(90deg,#1b5e20,#2e7d32)' },
+};
+
 function calculateScore(techniques: { name: string; keywords: string[] }[], totalKeywords: number): number {
   const matched = techniques.reduce((sum, t) => sum + t.keywords.length, 0);
   return Math.min(100, Math.round((matched / totalKeywords) * 100));
@@ -24,6 +31,7 @@ function createPanel(techniques: { name: string; keywords: string[] }[], totalKe
 
   const score = calculateScore(techniques, totalKeywords);
   const label = getDangerLabel(score);
+  const colors = SCORE_COLORS[label];
 
   const panel = document.createElement('div');
   panel.id = 'manipulation-panel';
@@ -60,6 +68,7 @@ function createPanel(techniques: { name: string; keywords: string[] }[], totalKe
   const scoreValue = document.createElement('span');
   scoreValue.className = 'panel-score-value';
   scoreValue.textContent = `${score}/100 — ${label}`;
+  scoreValue.style.color = colors.text;
 
   scoreRow.appendChild(scoreLabel);
   scoreRow.appendChild(scoreValue);
@@ -70,9 +79,9 @@ function createPanel(techniques: { name: string; keywords: string[] }[], totalKe
   const progressBar = document.createElement('div');
   progressBar.className = 'panel-progress-bar';
   progressBar.style.width = `${score}%`;
+  progressBar.style.background = colors.bar;
   progressTrack.appendChild(progressBar);
   scoreSection.appendChild(progressTrack);
-
   panel.appendChild(scoreSection);
 
   // Chips
@@ -92,7 +101,7 @@ function createPanel(techniques: { name: string; keywords: string[] }[], totalKe
 
     const count = document.createElement('span');
     count.className = 'chip-count';
-    count.textContent = String(technique.keywords.length);
+    count.textContent = String(n);
 
     const close = document.createElement('button');
     close.className = 'chip-close';
@@ -118,6 +127,33 @@ function showBanner(techniques: { name: string; keywords: string[] }[], totalKey
   document.body.appendChild(panel);
 }
 
+function showSafeNotification() {
+  removeBanner();
+
+  const pill = document.createElement('div');
+  pill.className = 'safe-notification';
+
+  const icon = document.createElement('span');
+  icon.className = 'safe-icon';
+  icon.textContent = '✓';
+
+  const text = document.createElement('span');
+  text.textContent = 'Aucun danger détecté';
+
+  const close = document.createElement('button');
+  close.className = 'safe-close';
+  close.innerHTML = '&times;';
+  close.addEventListener('click', () => pill.remove());
+
+  pill.appendChild(icon);
+  pill.appendChild(text);
+  pill.appendChild(close);
+  document.body.appendChild(pill);
+
+  bannerElement = pill;
+  setTimeout(() => pill.remove(), 4000);
+}
+
 browser.runtime.onMessage.addListener((
   message: { action: string; techniques: { name: string; keywords: string[] }[]; totalKeywords: number },
   _sender: browser.runtime.MessageSender,
@@ -125,6 +161,8 @@ browser.runtime.onMessage.addListener((
 ) => {
   if (message.action === 'showBanner') {
     showBanner(message.techniques, message.totalKeywords);
+  } else if (message.action === 'showSafe') {
+    showSafeNotification();
   } else if (message.action === 'hideBanner') {
     removeBanner();
   }
