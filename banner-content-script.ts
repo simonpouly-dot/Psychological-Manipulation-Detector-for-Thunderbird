@@ -122,9 +122,59 @@ function createPanel(techniques: { name: string; keywords: string[] }[], totalKe
   return panel;
 }
 
+function highlightKeywords(keywords: string[]) {
+  if (keywords.length === 0) return;
+
+  const escaped = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      const el = (node as Text).parentElement;
+      if (!el) return NodeFilter.FILTER_SKIP;
+      if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return NodeFilter.FILTER_SKIP;
+      if (el.closest('#manipulation-panel, .safe-notification, .keyword-highlight')) return NodeFilter.FILTER_SKIP;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const textNodes: Text[] = [];
+  let node;
+  while ((node = walker.nextNode())) textNodes.push(node as Text);
+
+  textNodes.forEach(textNode => {
+    const text = textNode.textContent || '';
+    if (!regex.test(text)) return;
+    regex.lastIndex = 0;
+
+    const fragment = document.createDocumentFragment();
+    let lastIndex = 0;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+      }
+      const mark = document.createElement('mark');
+      mark.className = 'keyword-highlight';
+      mark.textContent = match[0];
+      fragment.appendChild(mark);
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+    }
+    textNode.parentNode!.replaceChild(fragment, textNode);
+  });
+}
+
 function showBanner(techniques: { name: string; keywords: string[] }[], totalKeywords: number) {
   const panel = createPanel(techniques, totalKeywords);
   document.body.appendChild(panel);
+
+  if (calculateScore(techniques, totalKeywords) > 75) {
+    const allKeywords = techniques.reduce((acc: string[], t: { name: string; keywords: string[] }) => acc.concat(t.keywords), []);
+    highlightKeywords(allKeywords);
+  }
 }
 
 function showSafeNotification() {
