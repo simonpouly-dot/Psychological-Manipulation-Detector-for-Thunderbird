@@ -12,9 +12,12 @@ const SCORE_COLORS: Record<string, { text: string; bar: string }> = {
   'Faible':  { text: '#2e9e40', bar: 'linear-gradient(90deg,#1b5e20,#2e7d32)' },
 };
 
-function calculateScore(techniques: { name: string; keywords: string[] }[], totalKeywords: number): number {
-  const matched = techniques.reduce((sum, t) => sum + t.keywords.length, 0);
-  return Math.min(100, Math.round((matched / totalKeywords) * 100));
+function calculateScore(techniques: { name: string; keywords: string[] }[], totalKeywords: number, weights: Record<string, number> = {}): number {
+  const weighted = techniques.reduce((sum, t) => {
+    const key = TECHNIQUE_NAME_MAP[t.name] ?? t.name;
+    return sum + t.keywords.length * (weights[key] ?? 1);
+  }, 0);
+  return Math.min(100, Math.round((weighted / totalKeywords) * 100));
 }
 
 function getDangerLabel(score: number): string {
