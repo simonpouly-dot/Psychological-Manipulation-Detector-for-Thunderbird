@@ -101,13 +101,15 @@ async function checkMessageAndShowBanner(tab: browser.tabs.Tab, message: any) {
       }
     }
 
+    const totalKeywords = TECHNIQUE_KEYWORDS.reduce((sum, t) => sum + t.keywords.length, 0);
     if (matchedTechniques.length > 0) {
-      const totalKeywords = TECHNIQUE_KEYWORDS.reduce((sum, t) => sum + t.keywords.length, 0);
       await browser.tabs.sendMessage(tab.id!, {
         action: 'showBanner',
         techniques: matchedTechniques,
         totalKeywords
       });
+    } else {
+      await browser.tabs.sendMessage(tab.id!, { action: 'showSafe' });
     }
   } catch (error) {
     console.error('[CHECK] Error:', error);
