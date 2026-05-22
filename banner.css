@@ -1,141 +1,154 @@
-/**
- * Keyword Chips - Floating Pill Display
- * 
- * Compact floating pill-style chips for technique names
- * Less obstructive than full banner while maintaining visibility
- */
-
-/* Chips Container - Floating Overlay */
-.chips-container {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
+/* ── Main panel ─────────────────────────────────────────────── */
+.manipulation-panel {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 260px;
+  background: #1a1a2e;
+  border-radius: 10px;
   z-index: 9999;
-  pointer-events: none; /* Allow clicks to pass through empty space */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
 }
 
-/* Individual Technique Chip */
-.technique-chip {
-  display: inline-flex;
+/* ── Header ─────────────────────────────────────────────────── */
+.panel-header {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.4;
-  pointer-events: auto; /* Re-enable pointer events for chips */
-  opacity: 0.7;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  justify-content: space-between;
+  padding: 8px 10px;
 }
 
-/* Warning Style Chip */
-.technique-chip.warning {
-  background: linear-gradient(135deg, #d70022 0%, #c4001e 100%);
-  color: #ffffff;
-  border: 1px solid #ff6b6b;
+.panel-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #cccccc;
+  text-transform: uppercase;
 }
 
-/* Chip Text */
-.chip-text {
-  white-space: nowrap;
-}
-
-/* Chip Close Button */
-.chip-close {
-  flex-shrink: 0;
+.panel-close {
   width: 18px;
   height: 18px;
-  border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 300;
-  line-height: 1;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #cccccc;
+  font-size: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s;
   padding: 0;
-  margin-left: 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.panel-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Score section ──────────────────────────────────────────── */
+.panel-score-section {
+  padding: 0 10px 8px;
+}
+
+.panel-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.panel-score-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #777777;
+  text-transform: uppercase;
+}
+
+.panel-score-value {
+  font-size: 10px;
+  font-weight: 700;
+  color: #e05252;
+}
+
+.panel-progress-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.panel-progress-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
+  transition: width 0.6s ease;
+}
+
+/* ── Chips section ──────────────────────────────────────────── */
+.panel-chips {
+  padding: 8px 10px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Individual chip ────────────────────────────────────────── */
+.technique-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 5px 4px 9px;
+  background: #b33030;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chip-name {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.chip-count {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 3px;
+}
+
+.chip-close {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .chip-close:hover {
-  background: rgba(255, 255, 255, 0.4);
-  transform: scale(1.15);
-}
-
-.chip-close:active {
-  transform: scale(0.95);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .chips-container {
-    top: 4px;
-    left: 4px;
-    right: 4px;
-    gap: 6px;
-  }
-  
-  .technique-chip {
-    padding: 5px 10px;
-    font-size: 12px;
-  }
-  
-  .chip-close {
-    width: 16px;
-    height: 16px;
-    font-size: 14px;
-  }
-}
-
-/* Animation for chips appearance */
-@keyframes chipFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.technique-chip {
-  animation: chipFadeIn 0.25s ease-out;
-}
-
-/* Stagger animation for multiple chips */
-.technique-chip:nth-child(2) { animation-delay: 0.05s; }
-.technique-chip:nth-child(3) { animation-delay: 0.1s; }
-.technique-chip:nth-child(4) { animation-delay: 0.15s; }
-.technique-chip:nth-child(5) { animation-delay: 0.2s; }
-
-/* High Contrast Mode Support */
-@media (prefers-contrast: high) {
-  .technique-chip.warning {
-    background: #d70022;
-    border: 2px solid #ffffff;
-  }
-  
-  .chip-close {
-    background: rgba(255, 255, 255, 0.3);
-  }
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .technique-chip.warning {
-    background: linear-gradient(135deg, #e60025 0%, #d0001f 100%);
-    box-shadow: 0 2px 8px rgba(230, 0, 37, 0.5);
-  }
+  background: rgba(255, 255, 255, 0.35);
 }

@@ -1,131 +1,135 @@
-/**
- * Keyword Banner - Content Script for Message Viewer
- * 
- * This script runs in the context of the message viewer (email reading pane).
- * It listens for messages from the background script and creates/displays
- * the warning banner when keywords are detected.
- */
-
 let bannerElement: HTMLElement | null = null;
-let isBannerVisible: boolean = false;
 
-/**
- * Create the technique chips display
- */
-function createChips(techniques: { name: string; keywords: string[] }[], subject: string): HTMLElement {
-  // Remove existing banner if present
-  removeBanner();
-  
-  // Create chips container (floating overlay)
-  const chipsContainer = document.createElement('div');
-  chipsContainer.id = 'keyword-chips-container';
-  chipsContainer.className = 'chips-container';
-  
-  // Create a chip for each technique
-  techniques.forEach((technique) => {
-    const chip = document.createElement('div');
-    chip.className = 'technique-chip warning';
-    chip.title = `Matching keywords: ${technique.keywords.join(', ')}`;
-    
-    // Chip text (technique name)
-    const chipText = document.createElement('span');
-    chipText.className = 'chip-text';
-    chipText.textContent = technique.name;
-    chip.appendChild(chipText);
-    
-    // Close button for individual chip
-    const closeButton = document.createElement('button');
-    closeButton.className = 'chip-close';
-    closeButton.innerHTML = '&times;';
-    closeButton.addEventListener('click', () => {
-      chip.remove();
-      // Hide container if no chips left
-      if (chipsContainer.children.length === 0) {
-        removeBanner();
-      }
-    });
-    chip.appendChild(closeButton);
-    
-    chipsContainer.appendChild(chip);
-  });
-  
-  bannerElement = chipsContainer;
-  
-  return chipsContainer;
+function calculateScore(techniques: { name: string; keywords: string[] }[], totalKeywords: number): number {
+  const matched = techniques.reduce((sum, t) => sum + t.keywords.length, 0);
+  return Math.min(100, Math.round((matched / totalKeywords) * 100));
 }
 
-/**
- * Remove the banner from the DOM
- */
+function getDangerLabel(score: number): string {
+  if (score >= 76) return 'Critique';
+  if (score >= 51) return 'Élevé';
+  if (score >= 21) return 'Modéré';
+  return 'Faible';
+}
+
 function removeBanner() {
   if (bannerElement && bannerElement.parentNode) {
     bannerElement.parentNode.removeChild(bannerElement);
     bannerElement = null;
-    isBannerVisible = false;
   }
 }
 
-/**
- * Show the banner at the top of the message viewer
- */
-function showBanner(techniques: { name: string; keywords: string[] }[], subject: string) {
-  // Wait for message content to load
-  setTimeout(() => {
-    // Try to find the message content container
-    let targetContainer = null;
-    
-    // Common selectors for Thunderbird message viewer
-    const selectors = [
-      '#message-content',
-      '.msgContent',
-      '[data-message-id]',
-      '.thread-pane-message-body',
-      'iframe[src*="message"]',
-      '#messageview'
-    ];
-    
-    for (const selector of selectors) {
-      targetContainer = document.querySelector(selector);
-      if (targetContainer) break;
-    }
-    
-    // If no specific container found, use document body
-    if (!targetContainer) {
-      targetContainer = document.body;
-    }
-    
-    // Create and inject chips
-    const chips = createChips(techniques, subject);
-    
-    // Insert at the top of the container (floating overlay)
-    if (targetContainer.firstChild) {
-      targetContainer.insertBefore(chips, targetContainer.firstChild);
-    } else {
-      targetContainer.appendChild(chips);
-    }
-    
-    isBannerVisible = true;
-  }, 100); // Small delay to ensure DOM is ready
+function createPanel(techniques: { name: string; keywords: string[] }[], totalKeywords: number): HTMLElement {
+  removeBanner();
+
+  const score = calculateScore(techniques, totalKeywords);
+  const label = getDangerLabel(score);
+
+  const panel = document.createElement('div');
+  panel.id = 'manipulation-panel';
+  panel.className = 'manipulation-panel';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'panel-header';
+
+  const title = document.createElement('div');
+  title.className = 'panel-title';
+  title.innerHTML = '⚠ ANALYSE DE MANIPULATION';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'panel-close';
+  closeBtn.innerHTML = '&times;';
+  closeBtn.addEventListener('click', removeBanner);
+
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+  panel.appendChild(header);
+
+  // Score section
+  const scoreSection = document.createElement('div');
+  scoreSection.className = 'panel-score-section';
+
+  const scoreRow = document.createElement('div');
+  scoreRow.className = 'panel-score-row';
+
+  const scoreLabel = document.createElement('span');
+  scoreLabel.className = 'panel-score-label';
+  scoreLabel.textContent = 'SCORE DE DANGER';
+
+  const scoreValue = document.createElement('span');
+  scoreValue.className = 'panel-score-value';
+  scoreValue.textContent = `${score}/100 — ${label}`;
+
+  scoreRow.appendChild(scoreLabel);
+  scoreRow.appendChild(scoreValue);
+  scoreSection.appendChild(scoreRow);
+
+  const progressTrack = document.createElement('div');
+  progressTrack.className = 'panel-progress-track';
+  const progressBar = document.createElement('div');
+  progressBar.className = 'panel-progress-bar';
+  progressBar.style.width = `${score}%`;
+  progressTrack.appendChild(progressBar);
+  scoreSection.appendChild(progressTrack);
+
+  panel.appendChild(scoreSection);
+
+  // Chips
+  const chipsContainer = document.createElement('div');
+  chipsContainer.className = 'panel-chips';
+
+  techniques.forEach(technique => {
+    const chip = document.createElement('div');
+    chip.className = 'technique-chip';
+    chip.title = technique.keywords.join(', ');
+
+    const name = document.createElement('span');
+    name.className = 'chip-name';
+    name.textContent = technique.name;
+
+    const count = document.createElement('span');
+    count.className = 'chip-count';
+    count.textContent = String(technique.keywords.length);
+
+    const close = document.createElement('button');
+    close.className = 'chip-close';
+    close.innerHTML = '&times;';
+    close.addEventListener('click', () => {
+      chip.remove();
+      if (chipsContainer.children.length === 0) removeBanner();
+    });
+
+    chip.appendChild(name);
+    chip.appendChild(count);
+    chip.appendChild(close);
+    chipsContainer.appendChild(chip);
+  });
+
+  panel.appendChild(chipsContainer);
+  bannerElement = panel;
+  return panel;
 }
 
-/**
- * Listen for messages from background script
- */
-browser.runtime.onMessage.addListener((message: { action: string; techniques: { name: string; keywords: string[] }[]; subject: string }, sender: browser.runtime.MessageSender, sendResponse: (response: { success: boolean }) => void) => {
-  
+function showBanner(techniques: { name: string; keywords: string[] }[], totalKeywords: number) {
+  const panel = createPanel(techniques, totalKeywords);
+  document.body.appendChild(panel);
+}
+
+browser.runtime.onMessage.addListener((
+  message: { action: string; techniques: { name: string; keywords: string[] }[]; totalKeywords: number },
+  _sender: browser.runtime.MessageSender,
+  sendResponse: (response: { success: boolean }) => void
+) => {
   if (message.action === 'showBanner') {
-    showBanner(message.techniques, message.subject);
+    showBanner(message.techniques, message.totalKeywords);
   } else if (message.action === 'hideBanner') {
     removeBanner();
   }
-  
-  // Send response
   sendResponse({ success: true });
-  
-  return true; // Keep message channel open for async response
+  return true;
 });
 
-// Also try to inject on page load (for already open messages)
 window.addEventListener('load', () => {
   console.log('Keyword Banner content script loaded');
 });

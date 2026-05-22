@@ -102,13 +102,15 @@ async function checkMessageAndShowBanner(tab: browser.tabs.Tab, message: any) {
     }
 
     if (matchedTechniques.length > 0) {
+      const totalKeywords = TECHNIQUE_KEYWORDS.reduce((sum, t) => sum + t.keywords.length, 0);
       await browser.tabs.sendMessage(tab.id!, {
         action: 'showBanner',
         techniques: matchedTechniques,
-        subject: subject
+        totalKeywords
       });
     }
   } catch (error) {
+    console.error('[CHECK] Error:', error);
   }
 }
 
@@ -131,14 +133,20 @@ async function handleMessagesDisplayed(tab: browser.tabs.Tab, messageList: { mes
 // This must be done at the top level, and we catch errors for re-registration
 async function registerContentScript() {
   try {
+    await (browser as any).scripting.messageDisplay.unregisterScripts({ ids: ['keyword-banner-script'] });
+  } catch (_) {
+    // not registered yet, fine
+  }
+  try {
     await (browser as any).scripting.messageDisplay.registerScripts([{
       id: 'keyword-banner-script',
       css: ['banner.css'],
       js: ['banner-content-script.js'],
-      runAt: 'document_start',
+      runAt: 'document_end',
     }]);
+    console.log('[REGISTER] Content script registered');
   } catch (error) {
-    console.log(error);
+    console.error('[REGISTER] Failed to register content script:', error);
   }
 }
 
