@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Configuration — Détecteur de manipulation</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; background: #1a1a2e; color: #e0e0e0; }
+    h1 { font-size: 1.3rem; color: #a78bfa; margin-bottom: 6px; }
+    p.subtitle { font-size: 0.9rem; color: #888; margin-bottom: 32px; }
+    .question { background: #16213e; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+    .question h2 { font-size: 1rem; margin: 0 0 14px; color: #e0e0e0; }
+    .options { display: flex; gap: 10px; }
+    .options label { flex: 1; text-align: center; padding: 8px; border-radius: 6px; border: 1px solid #334; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
+    .options input[type="radio"] { display: none; }
+    .options input[type="radio"]:checked + span { font-weight: bold; }
+    .options label:has(input:checked) { background: #4c1d95; border-color: #7c3aed; color: #fff; }
+    button#save { margin-top: 24px; width: 100%; padding: 12px; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+    button#save:hover { background: #6d28d9; }
+    #confirmation { display: none; text-align: center; padding: 40px; color: #a78bfa; font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <h1>⚙ Configuration du détecteur</h1>
+  <p class="subtitle">Répondez aux questions suivantes pour personnaliser votre score de détection.</p>
+
+  <form id="onboarding-form">
+  </form>
+
+  <div id="confirmation">✓ Préférences enregistrées. Vous pouvez fermer cet onglet.</div>
+
+  <script src="onboarding.js" type="module"></script>
+</body>
+</html>
