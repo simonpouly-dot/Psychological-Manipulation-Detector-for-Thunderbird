@@ -34,10 +34,10 @@ function removeBanner() {
   }
 }
 
-function createPanel(techniques: { name: string; keywords: string[] }[], totalKeywords: number): HTMLElement {
+function createPanel(techniques: { name: string; keywords: string[] }[], totalKeywords: number, weights: Record<string, number> = {}): HTMLElement {
   removeBanner();
 
-  const score = calculateScore(techniques, totalKeywords);
+  const score = calculateScore(techniques, totalKeywords, weights);
   const label = getDangerLabel(score);
   const colors = SCORE_COLORS[label];
 
@@ -175,8 +175,8 @@ function highlightKeywords(keywords: string[]) {
   });
 }
 
-function showBanner(techniques: { name: string; keywords: string[] }[], totalKeywords: number) {
-  const panel = createPanel(techniques, totalKeywords);
+function showBanner(techniques: { name: string; keywords: string[] }[], totalKeywords: number, weights: Record<string, number> = {}) {
+  const panel = createPanel(techniques, totalKeywords, weights);
   document.body.appendChild(panel);
 
   if (calculateScore(techniques, totalKeywords) > 75) {
@@ -214,12 +214,12 @@ function showSafeNotification() {
 }
 
 browser.runtime.onMessage.addListener((
-  message: { action: string; techniques: { name: string; keywords: string[] }[]; totalKeywords: number },
+  message: { action: string; techniques: { name: string; keywords: string[] }[]; totalKeywords: number; weights: Record<string, number> },
   _sender: browser.runtime.MessageSender,
   sendResponse: (response: { success: boolean }) => void
 ) => {
   if (message.action === 'showBanner') {
-    showBanner(message.techniques, message.totalKeywords);
+    showBanner(message.techniques, message.totalKeywords, message.weights);
   } else if (message.action === 'showSafe') {
     showSafeNotification();
   } else if (message.action === 'hideBanner') {
