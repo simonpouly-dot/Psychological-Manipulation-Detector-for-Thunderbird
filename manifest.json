@@ -25,6 +25,7 @@
   "permissions": [
     "messagesRead",
     "tabs",
-    "scripting"
+    "scripting",
+    "storage"
   ]
 }
