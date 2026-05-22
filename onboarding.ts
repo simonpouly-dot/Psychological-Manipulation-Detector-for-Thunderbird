@@ -14,4 +14,9 @@ form.addEventListener('submit', async (e) => {
     amorcage:         WEIGHT_MAP[data.get('amorcage') as string] ?? 1,
     tentation:        WEIGHT_MAP[data.get('tentation') as string] ?? 1,
   };
+
+  await browser.storage.local.set({ techniqueWeights: weights });
+
+  form.style.display = 'none';
+  confirmation.style.display = 'block';
 });
