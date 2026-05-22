@@ -1,5 +1,10 @@
 let bannerElement: HTMLElement | null = null;
 
+const TECHNIQUE_NAME_MAP: Record<string, string> = {
+  'Autorité': 'autorite', 'Peur': 'peur', 'Personnalisation': 'personnalisation',
+  'Amorçage': 'amorcage', 'Tentation': 'tentation',
+};
+
 const SCORE_COLORS: Record<string, { text: string; bar: string }> = {
   'Critique': { text: '#e05252', bar: 'linear-gradient(90deg,#c0392b,#e74c3c)' },
   'Élevé':   { text: '#e07828', bar: 'linear-gradient(90deg,#d35400,#e67e22)' },
