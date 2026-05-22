@@ -131,6 +131,12 @@ async function handleMessagesDisplayed(tab: browser.tabs.Tab, messageList: { mes
 // Register the message display listener FIRST (before any await) to ensure it's persistent
 (browser as any).messageDisplay.onMessagesDisplayed.addListener(handleMessagesDisplayed);
 
+browser.runtime.onInstalled.addListener(async (details) => {
+  if ((details as any).reason === 'install') {
+    await browser.tabs.create({ url: browser.runtime.getURL('onboarding.html') });
+  }
+});
+
 // Register the content script using the MV3 scripting.messageDisplay API
 // This must be done at the top level, and we catch errors for re-registration
 async function registerContentScript() {
