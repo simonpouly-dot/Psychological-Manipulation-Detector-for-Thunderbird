@@ -133,11 +133,12 @@ function showSafeNotification() {
   const pill = document.createElement('div');
   pill.className = 'safe-notification';
 
-  const icon = document.createElement('span');
-  icon.className = 'safe-icon';
+  const icon = document.createElement('div');
+  icon.className = 'safe-icon-circle';
   icon.textContent = '✓';
 
   const text = document.createElement('span');
+  text.className = 'safe-text';
   text.textContent = 'Aucun danger détecté';
 
   const close = document.createElement('button');
