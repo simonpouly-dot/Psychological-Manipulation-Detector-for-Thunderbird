@@ -154,6 +154,14 @@
   background: rgba(255, 255, 255, 0.35);
 }
 
+/* ── Keyword highlight ──────────────────────────────────────── */
+.keyword-highlight {
+  background: #e53935;
+  color: #ffffff;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
 /* ── Safe notification ──────────────────────────────────────── */
 .safe-notification {
   position: fixed;
