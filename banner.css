@@ -106,12 +106,16 @@
   align-items: center;
   gap: 5px;
   padding: 4px 5px 4px 9px;
-  background: #b33030;
   border-radius: 999px;
   color: #ffffff;
   font-size: 11px;
   font-weight: 600;
 }
+
+.chip-green  { background: #2e7d32; }
+.chip-yellow { background: #c27d00; }
+.chip-red    { background: #c62828; }
+.chip-black  { background: #1e1e1e; border: 1px solid rgba(255,255,255,0.18); }
 
 .chip-name {
   flex: 1;

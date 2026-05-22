@@ -81,7 +81,9 @@ function createPanel(techniques: { name: string; keywords: string[] }[], totalKe
 
   techniques.forEach(technique => {
     const chip = document.createElement('div');
-    chip.className = 'technique-chip';
+    const n = technique.keywords.length;
+    const colorClass = n <= 2 ? 'chip-green' : n <= 4 ? 'chip-yellow' : n <= 6 ? 'chip-red' : 'chip-black';
+    chip.className = `technique-chip ${colorClass}`;
     chip.title = technique.keywords.join(', ');
 
     const name = document.createElement('span');
